@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import Table from "../components/Table";
 import Pagination from "../components/Pagination";
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure} from "@nextui-org/react";
+import {Modal, ModalContent, ModalHeader,useDisclosure} from "@nextui-org/react";
 import AddOrder from "../components/AddOrder";
+import EditOrder from "../components/EditOrder";
 
-interface Product {
+interface dummy {
   id: number;
   shiipy: number;
   date: string;
@@ -21,11 +22,25 @@ interface Product {
 const Order: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
+  const itemsPerPage = 3;
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const [selectedModal, setSelectedModal] = useState<string>("add");
+  const [search, setSearch] = useState("")
+  const [filterStatus, setFilterStatus] = useState("")
+  
 
-  const products: Product[] = [
+  const dummy: dummy[] = [
+    {
+      id: 14048,
+      shiipy: 1303,
+      date: "2021-09-01",
+      status: "Delivered",
+      customer: "John Doe",
+      email: "joho@gmail.com",
+      country: "India",
+      shipping: "DHL",
+      source: "Shopify",
+      orderType: "Express",
+    },
     {
       id: 14048,
       shiipy: 1303,
@@ -39,8 +54,8 @@ const Order: React.FC = () => {
       orderType: "Express",
     },
     {
-      id: 140348,
-      shiipy: 13403,
+      id: 14048,
+      shiipy: 1303,
       date: "2021-09-01",
       status: "Pending",
       customer: "John Doe",
@@ -51,10 +66,10 @@ const Order: React.FC = () => {
       orderType: "Express",
     },
     {
-      id: 1234048,
-      shiipy: 143203,
+      id: 14048,
+      shiipy: 1303,
       date: "2021-09-01",
-      status: "Pending",
+      status: "Delivered",
       customer: "John Doe",
       email: "joho@gmail.com",
       country: "India",
@@ -68,6 +83,7 @@ const Order: React.FC = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const [products, setProducts] = useState<dummy[]>(dummy);
   const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleCheckboxChange = (productId: number) => {
@@ -80,9 +96,45 @@ const Order: React.FC = () => {
     });
   };
 
+  const SearchData = (search: string) => {
+    const filteredData = dummy.filter((data) => {
+      return Object.keys(data).some((key) =>
+        data[key].toString().toLowerCase().includes(search.toLowerCase())
+      );
+    });
+    setProducts(filteredData);
+  }
+  useEffect(() => {
+    SearchData(search)
+  }, [search]);
+
+  useEffect(() => {
+    if (filterStatus === "All") {
+      setProducts(dummy)
+    } else {
+      const filteredData = dummy.filter((data) => {
+        return data.status.toLowerCase().trim().includes(filterStatus.toLowerCase().trim())
+      });
+      setProducts(filteredData);
+    }
+  }, [filterStatus]);
+
+
+
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+
+  function handleOrderAdded() {
+    const storedData = localStorage.getItem('orderData');
+    if (storedData) {
+      setProducts(JSON.parse(storedData));
+    }
+  }
+
+  useEffect(() => {
+    handleOrderAdded()
+  }, []);
 
   return (
     <>
@@ -105,6 +157,8 @@ const Order: React.FC = () => {
               type="text"
               className="border-none focus:outline-none w-full px-2"
               placeholder="Search for category,name, customer, etc."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
@@ -114,11 +168,8 @@ const Order: React.FC = () => {
             id="countries"
             className="bg-gray-50 border border-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
-            <option selected>All</option>
-            <option value="US">india</option>
-            <option value="CA">Canada</option>
-            <option value="FR">France</option>
-            <option value="DE">Germany</option>
+            <option value="">All</option>
+            <option value="pending">not define</option>
           </select>
         </div>
         <div className="flex flex-col w-full">
@@ -126,6 +177,7 @@ const Order: React.FC = () => {
           <select
             id="countries"
             className="bg-gray-50 border border-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            onChange={(e) => setFilterStatus(e.target.value)}
           >
             <option selected>All</option>
             <option value="pending">Pending</option>
@@ -158,7 +210,7 @@ const Order: React.FC = () => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Add order</ModalHeader>
-                <AddOrder close={onClose} />
+                <AddOrder close={onClose} onOrderAdded={handleOrderAdded}/>
             </>
           )}
         </ModalContent>

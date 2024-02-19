@@ -149,12 +149,12 @@ interface TableProps {
                       {product.orderType}
                     </td>
                     <td className="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
-                      <a
+                      <p
                         href="#"
                         className="text-blue-600 dark:text-blue-500 hover:underline"
                       >
                         Edit
-                      </a>
+                      </p>
                     </td>
                   </tr>
                 ))}
