@@ -1,8 +1,10 @@
+
+
 interface TableProps {
-    products: Product[];
-    selectedItems: number[];
-    handleCheckboxChange: (productId: number) => void;
-  }
+  products: any[];
+  selectedItems: number[];
+  handleCheckboxChange: (productId: number) => void;
+}
   
   const Table: React.FC<TableProps> = ({ products, selectedItems, handleCheckboxChange }) => {
     return (

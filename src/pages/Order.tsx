@@ -4,20 +4,9 @@ import Table from "../components/Table";
 import Pagination from "../components/Pagination";
 import {Modal, ModalContent, ModalHeader,useDisclosure} from "@nextui-org/react";
 import AddOrder from "../components/AddOrder";
-import EditOrder from "../components/EditOrder";
+// import EditOrder from "../components/EditOrder";
 
-interface dummy {
-  id: number;
-  shiipy: number;
-  date: string;
-  status: string;
-  customer: string;
-  email: string;
-  country: string;
-  shipping: string;
-  source: string;
-  orderType: string;
-}
+
 
 const Order: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -96,8 +85,12 @@ const Order: React.FC = () => {
     });
   };
 
+  type dummy = {
+    [key: string]: any;
+  };
+
   const SearchData = (search: string) => {
-    const filteredData = dummy.filter((data) => {
+    const filteredData = dummy.filter((data: dummy) => {
       return Object.keys(data).some((key) =>
         data[key].toString().toLowerCase().includes(search.toLowerCase())
       );
