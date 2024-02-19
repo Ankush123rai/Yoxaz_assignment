@@ -1,12 +1,20 @@
+import {Modal, ModalContent, ModalHeader,useDisclosure} from "@nextui-org/react";
+import EditOrder from "./EditOrder";
+import { useState } from "react";
 
 
 interface TableProps {
   products: any[];
   selectedItems: number[];
   handleCheckboxChange: (productId: number) => void;
+  close: () => void;
+  onOrderAdded: () => void;
 }
   
-  const Table: React.FC<TableProps> = ({ products, selectedItems, handleCheckboxChange }) => {
+  const Table: React.FC<TableProps> = ({ products, close,onOrderAdded, selectedItems, handleCheckboxChange }) => {
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    const [editItem, setEditItem] = useState({} as any);
+
     return (
         <div className="overflow-x-auto shadow-md sm:rounded-lg">
         <div className="inline-block min-w-full align-middle">
@@ -152,6 +160,11 @@ interface TableProps {
                     </td>
                     <td className="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
                       <p
+                      onClick={() => {
+                        onOpen();
+                        setEditItem(product);
+                      }
+                      }
                         className="text-blue-600 dark:text-blue-500 hover:underline"
                       >
                         Edit
@@ -163,6 +176,20 @@ interface TableProps {
             </table>
           </div>
         </div>
+        <Modal 
+        isOpen={isOpen} 
+        onOpenChange={onOpenChange}
+        radius="lg"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Edit order</ModalHeader>
+              <EditOrder close={onClose} product={editItem} onOrderUpdated={onOrderAdded}/>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       </div>
     );
   };

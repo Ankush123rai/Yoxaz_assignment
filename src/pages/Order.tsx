@@ -112,8 +112,6 @@ const Order: React.FC = () => {
     }
   }, [filterStatus]);
 
-
-
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
@@ -190,7 +188,12 @@ const Order: React.FC = () => {
           <h2 className="font-bold text-xl">Product Summary</h2>
           <Pagination currentPage={currentPage} totalItems={products.length} itemsPerPage={itemsPerPage} paginate={paginate} />
         </div>
-        <Table products={currentItems} selectedItems={selectedItems} handleCheckboxChange={handleCheckboxChange} />
+        <Table 
+        products={currentItems} 
+        selectedItems={selectedItems}
+         handleCheckboxChange={handleCheckboxChange}
+         close={onOpenChange}
+          onOrderAdded={handleOrderAdded} />
       </div>
     </div>
 
