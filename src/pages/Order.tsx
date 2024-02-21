@@ -1,79 +1,35 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import Table from "../components/Table";
 import Pagination from "../components/Pagination";
-import {Modal, ModalContent, ModalHeader,useDisclosure} from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, useDisclosure } from "@nextui-org/react";
 import AddOrder from "../components/AddOrder";
-// import EditOrder from "../components/EditOrder";
 
-
+interface OrderData {
+  id: number;
+  shiipy: number;
+  date: string;
+  status: string;
+  customer: string;
+  email: string;
+  country: string;
+  shipping: string;
+  source: string;
+  orderType: string;
+}
 
 const Order: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const [search, setSearch] = useState("")
-  const [filterStatus, setFilterStatus] = useState("")
-  
-
-  const dummy: dummy[] = [
-    {
-      id: 14048,
-      shiipy: 1303,
-      date: "2021-09-01",
-      status: "Delivered",
-      customer: "John Doe",
-      email: "joho@gmail.com",
-      country: "India",
-      shipping: "DHL",
-      source: "Shopify",
-      orderType: "Express",
-    },
-    {
-      id: 14048,
-      shiipy: 1303,
-      date: "2021-09-01",
-      status: "Pending",
-      customer: "John Doe",
-      email: "joho@gmail.com",
-      country: "India",
-      shipping: "DHL",
-      source: "Shopify",
-      orderType: "Express",
-    },
-    {
-      id: 14048,
-      shiipy: 1303,
-      date: "2021-09-01",
-      status: "Pending",
-      customer: "John Doe",
-      email: "joho@gmail.com",
-      country: "India",
-      shipping: "DHL",
-      source: "Shopify",
-      orderType: "Express",
-    },
-    {
-      id: 14048,
-      shiipy: 1303,
-      date: "2021-09-01",
-      status: "Delivered",
-      customer: "John Doe",
-      email: "joho@gmail.com",
-      country: "India",
-      shipping: "DHL",
-      source: "Shopify",
-      orderType: "Express",
-    },
-  ];
-
-  
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const [products, setProducts] = useState<dummy[]>(dummy);
-  const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+  const storedData = localStorage.getItem('orderData');
+  const parsedData: OrderData[] = storedData ? JSON.parse(storedData) : [];
+  const [products, setProducts] = useState<OrderData[]>(parsedData);
+  const currentItems = products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const handleCheckboxChange = (productId: number) => {
     setSelectedItems((prevSelectedItems) => {
@@ -85,32 +41,32 @@ const Order: React.FC = () => {
     });
   };
 
-  type dummy = {
-    [key: string]: any;
+  const handleReset = () => {
+    setSelectedItems([]);
+    setSearch("");
+    setFilterStatus("All");
   };
 
-  const SearchData = (search: string) => {
-    const filteredData = dummy.filter((data: dummy) => {
-      return Object.keys(data).some((key) =>
-        data[key].toString().toLowerCase().includes(search.toLowerCase())
-      );
-    });
-    setProducts(filteredData);
-  }
-  useEffect(() => {
-    SearchData(search)
-  }, [search]);
+  const searchFilter = (data: OrderData) => {
+    return (
+      data.customer.toLowerCase().includes(search.toLowerCase()) ||
+      data.status.toLowerCase().includes(search.toLowerCase()) ||
+      data.email.toLowerCase().includes(search.toLowerCase()) ||
+      data.country.toLowerCase().includes(search.toLowerCase())
+    );
+  };
+
+  const filterData = () => {
+    if (filterStatus === "All") {
+      return parsedData;
+    } else {
+      return parsedData.filter((data) => data.status.toLowerCase() === filterStatus.toLowerCase());
+    }
+  };
 
   useEffect(() => {
-    if (filterStatus === "All") {
-      setProducts(dummy)
-    } else {
-      const filteredData = dummy.filter((data) => {
-        return data.status.toLowerCase().trim().includes(filterStatus.toLowerCase().trim())
-      });
-      setProducts(filteredData);
-    }
-  }, [filterStatus]);
+    setProducts(filterData().filter(searchFilter));
+  }, [search, filterStatus]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -119,12 +75,13 @@ const Order: React.FC = () => {
   function handleOrderAdded() {
     const storedData = localStorage.getItem('orderData');
     if (storedData) {
-      setProducts(JSON.parse(storedData));
+      const parsedData = JSON.parse(storedData);
+      setProducts(parsedData);
     }
   }
 
   useEffect(() => {
-    handleOrderAdded()
+    handleOrderAdded();
   }, []);
 
   return (
@@ -172,12 +129,12 @@ const Order: React.FC = () => {
           >
             <option selected>All</option>
             <option value="pending">Pending</option>
-            <option value="completed">Completed</option>
+            <option value="Delivered">Delivered</option>
             <option value="progressing">progressing</option>
           </select>
         </div>
         <div className="flex flex-col w-full">
-          <button className="bg-blue-800 mt-6 text-white uppercase px-3 rounded-md py-1">
+          <button onClick={handleReset} className="bg-blue-800 mt-6 text-white uppercase px-3 rounded-md py-1">
             Reset all
           </button>
         </div>

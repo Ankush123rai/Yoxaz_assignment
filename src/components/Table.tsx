@@ -102,6 +102,13 @@ interface TableProps {
                 </tr>
               </thead>
               <tbody className=" divide-y bg-white divide-gray-200 dark:divide-gray-400">
+                {products.length === 0 && (
+                  <tr>
+                    <td colSpan={12} className="py-4 px-6 text-sm font-medium text-gray-900 text-center">
+                      No orders found
+                    </td>
+                  </tr>
+                )}
                 {products.map((product) => (
                   <tr
                     key={product.id}
