@@ -86,17 +86,18 @@ const Order: React.FC = () => {
 
   return (
     <>
-    <div className="p-14">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Order</h1>
-        <button
-          onClick={onOpen}
-         className="bg-blue-800 uppercase px-3 text-white rounded-md py-1">
-          create new
-        </button>
-      </div>
+      <div className="p-4 sm:p-14">
+        <div className="flex flex-col sm:flex-row justify-between items-center">
+          <h1 className="text-3xl font-bold mb-4 sm:mb-0">Order</h1>
+          <button
+            onClick={onOpen}
+            className="bg-blue-800 uppercase px-3 text-white rounded-md py-1 mt-4 sm:mt-0"
+          >
+            create new
+          </button>
+        </div>
 
-      <div className="flex items-center gap-5 px-8 py-4 w-full rounded-md mt-7 bg-white shadow-lg">
+        <div className="flex flex-col sm:flex-row items-center gap-5 px-2 sm:px-8 py-4 w-full rounded-md mt-4 sm:mt-7 bg-white shadow-lg">
         <div className="flex flex-col w-full">
           <p className="font-bold">what are you looking for?</p>
           <div className=" flex w-full sm:w-[400px] items-center p-2 border-2 border-gray-300 bg-white rounded-md">
