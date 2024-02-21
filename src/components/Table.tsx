@@ -11,9 +11,9 @@ interface TableProps {
   onOrderAdded: () => void;
 }
   
-  const Table: React.FC<TableProps> = ({ products, close,onOrderAdded, selectedItems, handleCheckboxChange }) => {
+  const Table: React.FC<TableProps> = ({ products,onOrderAdded, selectedItems, handleCheckboxChange }) => {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
-    const [editItem, setEditItem] = useState({} as any);
+    const [editItem, setEditItem] = useState({} as unknown);
 
     return (
         <div className="overflow-x-auto shadow-md sm:rounded-lg">

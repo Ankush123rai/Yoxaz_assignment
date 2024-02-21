@@ -114,7 +114,8 @@ const AddOrder = ({ close, onOrderAdded }: AddOrderProps) => {
             id="status"
             name="status"
             value={order.status}
-            onChange={handleChange}
+            onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => handleChange(e as React.ChangeEvent<HTMLInputElement>)}
+
           >
             <option value="pending">Pending</option>
             <option value="completed">Completed</option>
